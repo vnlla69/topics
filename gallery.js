@@ -20,7 +20,7 @@ const galleryItems = [
         id: 3,
         title: "Ulap Hike",
         description: "Ulap Hike adventure",
-        video: "https://drive.google.com/uc?export=download&id=1ClY8pKaxiqBuhqP60uZaGk8Q0IAosznU",
+        video: "https://www.youtube.com/embed/BbS1r6Z0Xnw",
         type: 'video',
         section: 'my-gallery'
     },
@@ -28,7 +28,7 @@ const galleryItems = [
         id: 4,
         title: "City Assesors Office SPES",
         description: "Clip - Day in the life at CASSO",
-        video: "https://drive.google.com/uc?export=download&id=1HXN-GJEethERPTXaI0ATXADIk_-tyBPV",
+        video: "https://www.youtube.com/embed/gW_wFeZSWYY",
         type: 'video',
         section: 'my-gallery'
     }
@@ -64,7 +64,7 @@ const twitterUploads = [
         id: 7,
         title: "Character Movement Video",
         description: "Quick 5 second clip of my character in motion #Animation",
-        video: "https://drive.google.com/uc?export=download&id=1Id7jKP0VSDbfJemx9Gixh59o-Odgn_E0",
+        video: "https://www.youtube.com/embed/UYoP72A49Co",
         type: 'video',
         section: 'twitter-uploads',
         twitterData: {
@@ -77,7 +77,7 @@ const twitterUploads = [
         id: 8,
         title: "Community Engagement and Motivation Animation",
         description: "A clip on community engagement and motivation #Community #Motivation",
-        video: "https://drive.google.com/uc?export=download&id=19zrMhS6MKOMD2ku22QRghWIqy1F5lCr8",
+        video: "https://www.youtube.com/embed/Gp4BPl-vMos",
         type: 'video',
         section: 'twitter-uploads',
         twitterData: {
@@ -642,3 +642,4 @@ const galleryManager = new GalleryManager();
 
 
     
+
