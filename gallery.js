@@ -250,17 +250,21 @@ class GalleryManager {
                 </div>
             `;
         } else if (item.type === 'video' && item.video) {
-            return `
-                <div class="video-container">
-                    <video class="gallery-video" preload="metadata">
-                        <source src="${item.video}" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
-                    <div class="video-overlay">
-                        <i class="fas fa-play"></i>
+            if (item.videoSource === 'youtube') {
+                return this.createYouTubeThumbnail(item);
+            } else {
+                return `
+                    <div class="video-container">
+                        <video class="gallery-video" preload="metadata">
+                            <source src="${item.video}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                        <div class="video-overlay">
+                            <i class="fas fa-play"></i>
+                        </div>
                     </div>
-                </div>
-            `;
+                `;
+            }
         } else if (item.type === 'video' && !item.video) {
             return `
                 <div class="empty-video">
@@ -278,6 +282,61 @@ class GalleryManager {
                 </div>
             `;
         }
+    }
+
+     createYouTubeThumbnail(item) {
+        const videoId = item.video;
+        const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+        
+        return `
+            <div class="video-container youtube-video" data-video-id="${videoId}">
+                <img src="${thumbnailUrl}" alt="${item.title}" class="youtube-thumbnail">
+                <div class="video-overlay youtube-overlay">
+                    <i class="fab fa-youtube"></i>
+                    <span>Watch on YouTube</span>
+                </div>
+            </div>
+        `;
+    }
+
+    // Update openModal method for YouTube
+    openModal(item) {
+        if (!item.image && !item.video) return;
+        
+        let modal = document.querySelector('.modal');
+        if (!modal) {
+            modal = this.createModal();
+        }
+        
+        const modalContent = modal.querySelector('.modal-content');
+        
+        if (item.type === 'video' && item.video) {
+            if (item.videoSource === 'youtube') {
+                // YouTube embed in modal
+                modalContent.innerHTML = `
+                    <iframe 
+                        class="modal-youtube" 
+                        src="https://www.youtube.com/embed/${item.video}?autoplay=1" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                    </iframe>
+                `;
+            } else {
+                // Local video
+                modalContent.innerHTML = `
+                    <video class="modal-video" controls autoplay>
+                        <source src="${item.video}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                `;
+            }
+        } else if (item.type === 'image' && item.image) {
+            modalContent.innerHTML = `<img src="${item.image}" alt="${item.title}">`;
+            modalContent.querySelector('img').className = 'modal-image';
+        }
+        
+        modal.style.display = 'flex';
     }
 
     // Create audio player
@@ -642,4 +701,5 @@ const galleryManager = new GalleryManager();
 
 
     
+
 
