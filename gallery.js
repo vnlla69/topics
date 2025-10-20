@@ -20,17 +20,19 @@ const galleryItems = [
         id: 3,
         title: "Ulap Hike",
         description: "Ulap Hike adventure",
-        video: "https://www.youtube.com/embed/BbS1r6Z0Xnw",
+        video: "BbS1r6Z0Xnw", // ← Just the video ID, not full URL
         type: 'video',
-        section: 'my-gallery'
+        section: 'my-gallery',
+        videoSource: 'youtube' // ← ADD THIS
     },
     {
         id: 4,
         title: "City Assesors Office SPES",
         description: "Clip - Day in the life at CASSO",
-        video: "https://www.youtube.com/embed/gW_wFeZSWYY",
+        video: "gW_wFeZSWYY", // ← Just the video ID, not full URL
         type: 'video',
-        section: 'my-gallery'
+        section: 'my-gallery',
+        videoSource: 'youtube' // ← ADD THIS
     }
 ];
 
@@ -64,9 +66,10 @@ const twitterUploads = [
         id: 7,
         title: "Character Movement Video",
         description: "Quick 5 second clip of my character in motion #Animation",
-        video: "https://www.youtube.com/embed/UYoP72A49Co",
+        video: "UYoP72A49Co", // ← Just the video ID, not full URL
         type: 'video',
         section: 'twitter-uploads',
+        videoSource: 'youtube', // ← ADD THIS
         twitterData: {
             likes: 69,
             retweets: 69,
@@ -77,9 +80,10 @@ const twitterUploads = [
         id: 8,
         title: "Community Engagement and Motivation Animation",
         description: "A clip on community engagement and motivation #Community #Motivation",
-        video: "https://www.youtube.com/embed/Gp4BPl-vMos",
+        video: "Gp4BPl-vMos", // ← Just the video ID, not full URL
         type: 'video',
         section: 'twitter-uploads',
+        videoSource: 'youtube', // ← ADD THIS
         twitterData: {
             likes: 0,
             retweets: 0,
@@ -284,7 +288,7 @@ class GalleryManager {
         }
     }
 
-     createYouTubeThumbnail(item) {
+    createYouTubeThumbnail(item) {
         const videoId = item.video;
         const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
         
@@ -297,46 +301,6 @@ class GalleryManager {
                 </div>
             </div>
         `;
-    }
-
-    // Update openModal method for YouTube
-    openModal(item) {
-        if (!item.image && !item.video) return;
-        
-        let modal = document.querySelector('.modal');
-        if (!modal) {
-            modal = this.createModal();
-        }
-        
-        const modalContent = modal.querySelector('.modal-content');
-        
-        if (item.type === 'video' && item.video) {
-            if (item.videoSource === 'youtube') {
-                // YouTube embed in modal
-                modalContent.innerHTML = `
-                    <iframe 
-                        class="modal-youtube" 
-                        src="https://www.youtube.com/embed/${item.video}?autoplay=1" 
-                        frameborder="0" 
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                        allowfullscreen>
-                    </iframe>
-                `;
-            } else {
-                // Local video
-                modalContent.innerHTML = `
-                    <video class="modal-video" controls autoplay>
-                        <source src="${item.video}" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
-                `;
-            }
-        } else if (item.type === 'image' && item.image) {
-            modalContent.innerHTML = `<img src="${item.image}" alt="${item.title}">`;
-            modalContent.querySelector('img').className = 'modal-image';
-        }
-        
-        modal.style.display = 'flex';
     }
 
     // Create audio player
@@ -553,12 +517,26 @@ class GalleryManager {
         const modalContent = modal.querySelector('.modal-content');
         
         if (item.type === 'video' && item.video) {
-            modalContent.innerHTML = `
-                <video class="modal-video" controls autoplay>
-                    <source src="${item.video}" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
-            `;
+            if (item.videoSource === 'youtube') {
+                // YouTube embed in modal
+                modalContent.innerHTML = `
+                    <iframe 
+                        class="modal-youtube" 
+                        src="https://www.youtube.com/embed/${item.video}?autoplay=1" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                    </iframe>
+                `;
+            } else {
+                // Local video
+                modalContent.innerHTML = `
+                    <video class="modal-video" controls autoplay>
+                        <source src="${item.video}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                `;
+            }
         } else if (item.type === 'image' && item.image) {
             modalContent.innerHTML = `<img src="${item.image}" alt="${item.title}">`;
             modalContent.querySelector('img').className = 'modal-image';
@@ -608,6 +586,13 @@ class GalleryManager {
                 video.pause();
                 video.currentTime = 0;
             });
+            
+            // Also stop YouTube videos
+            const iframes = modal.querySelectorAll('iframe');
+            iframes.forEach(iframe => {
+                iframe.src = iframe.src.replace('?autoplay=1', '');
+            });
+            
             modal.style.display = 'none';
         }
     }
@@ -697,9 +682,3 @@ class GalleryManager {
 
 // Create global gallery instance
 const galleryManager = new GalleryManager();
-    
-
-
-    
-
-
