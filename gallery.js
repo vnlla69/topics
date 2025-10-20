@@ -20,7 +20,7 @@ const galleryItems = [
         id: 3,
         title: "Ulap Hike",
         description: "Ulap Hike adventure",
-        video: "./stuff/videos/ulap1.mp4",
+        video: "https://drive.google.com/uc?export=download&id=1ClY8pKaxiqBuhqP60uZaGk8Q0IAosznU",
         type: 'video',
         section: 'my-gallery'
     },
@@ -28,7 +28,7 @@ const galleryItems = [
         id: 4,
         title: "City Assesors Office SPES",
         description: "Clip - Day in the life at CASSO",
-        video: "./stuff/videos/casso1.mp4",
+        video: "https://drive.google.com/uc?export=download&id=1HXN-GJEethERPTXaI0ATXADIk_-tyBPV",
         type: 'video',
         section: 'my-gallery'
     }
@@ -64,7 +64,7 @@ const twitterUploads = [
         id: 7,
         title: "Character Movement Video",
         description: "Quick 5 second clip of my character in motion #Animation",
-        video: "./stuff/videos/char1m.mp4",
+        video: "https://drive.google.com/uc?export=download&id=1Id7jKP0VSDbfJemx9Gixh59o-Odgn_E0",
         type: 'video',
         section: 'twitter-uploads',
         twitterData: {
@@ -77,7 +77,7 @@ const twitterUploads = [
         id: 8,
         title: "Community Engagement and Motivation Animation",
         description: "A clip on community engagement and motivation #Community #Motivation",
-        video: "./stuff/videos/community.mp4",
+        video: "https://drive.google.com/uc?export=download&id=19zrMhS6MKOMD2ku22QRghWIqy1F5lCr8",
         type: 'video',
         section: 'twitter-uploads',
         twitterData: {
@@ -639,5 +639,6 @@ class GalleryManager {
 // Create global gallery instance
 const galleryManager = new GalleryManager();
     
+
 
     
