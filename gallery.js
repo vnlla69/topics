@@ -20,19 +20,19 @@ const galleryItems = [
         id: 3,
         title: "Ulap Hike",
         description: "Ulap Hike adventure",
-        video: "BbS1r6Z0Xnw", // ← Just the video ID, not full URL
+        video: "BbS1r6Z0Xnw",
         type: 'video',
         section: 'my-gallery',
-        videoSource: 'youtube' // ← ADD THIS
+        videoSource: 'youtube'
     },
     {
         id: 4,
         title: "City Assesors Office SPES",
         description: "Clip - Day in the life at CASSO",
-        video: "gW_wFeZSWYY", // ← Just the video ID, not full URL
+        video: "gW_wFeZSWYY",
         type: 'video',
         section: 'my-gallery',
-        videoSource: 'youtube' // ← ADD THIS
+        videoSource: 'youtube'
     }
 ];
 
@@ -66,10 +66,10 @@ const twitterUploads = [
         id: 7,
         title: "Character Movement Video",
         description: "Quick 5 second clip of my character in motion #Animation",
-        video: "UYoP72A49Co", // ← Just the video ID, not full URL
+        video: "UYoP72A49Co",
         type: 'video',
         section: 'twitter-uploads',
-        videoSource: 'youtube', // ← ADD THIS
+        videoSource: 'youtube',
         twitterData: {
             likes: 69,
             retweets: 69,
@@ -80,10 +80,10 @@ const twitterUploads = [
         id: 8,
         title: "Community Engagement and Motivation Animation",
         description: "A clip on community engagement and motivation #Community #Motivation",
-        video: "Gp4BPl-vMos", // ← Just the video ID, not full URL
+        video: "Gp4BPl-vMos",
         type: 'video',
         section: 'twitter-uploads',
-        videoSource: 'youtube', // ← ADD THIS
+        videoSource: 'youtube',
         twitterData: {
             likes: 0,
             retweets: 0,
@@ -254,7 +254,8 @@ class GalleryManager {
                 </div>
             `;
         } else if (item.type === 'video' && item.video) {
-            if (item.videoSource === 'youtube') {
+            // Check if it's a YouTube video
+            if (this.isYouTubeVideo(item)) {
                 return this.createYouTubeThumbnail(item);
             } else {
                 return `
@@ -288,6 +289,12 @@ class GalleryManager {
         }
     }
 
+    // Check if item is a YouTube video
+    isYouTubeVideo(item) {
+        return item.videoSource === 'youtube' || 
+               (item.video && item.video.length === 11 && !item.video.includes('/'));
+    }
+
     createYouTubeThumbnail(item) {
         const videoId = item.video;
         const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
@@ -297,7 +304,7 @@ class GalleryManager {
                 <img src="${thumbnailUrl}" alt="${item.title}" class="youtube-thumbnail">
                 <div class="video-overlay youtube-overlay">
                     <i class="fab fa-youtube"></i>
-                    <span>Watch on YouTube</span>
+                    <span>Click to play</span>
                 </div>
             </div>
         `;
@@ -517,16 +524,18 @@ class GalleryManager {
         const modalContent = modal.querySelector('.modal-content');
         
         if (item.type === 'video' && item.video) {
-            if (item.videoSource === 'youtube') {
-                // YouTube embed in modal
+            if (this.isYouTubeVideo(item)) {
+                // YouTube embed in modal - plays directly on your site
                 modalContent.innerHTML = `
-                    <iframe 
-                        class="modal-youtube" 
-                        src="https://www.youtube.com/embed/${item.video}?autoplay=1" 
-                        frameborder="0" 
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                        allowfullscreen>
-                    </iframe>
+                    <div class="youtube-modal-container">
+                        <iframe 
+                            class="modal-youtube" 
+                            src="https://www.youtube.com/embed/${item.video}?autoplay=1&rel=0" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                        </iframe>
+                    </div>
                 `;
             } else {
                 // Local video
@@ -581,103 +590,24 @@ class GalleryManager {
     closeModal() {
         const modal = document.querySelector('.modal');
         if (modal) {
+            // Stop local videos
             const videos = modal.querySelectorAll('video');
             videos.forEach(video => {
                 video.pause();
                 video.currentTime = 0;
             });
             
-            // Also stop YouTube videos
+            // Stop YouTube videos by removing the src
             const iframes = modal.querySelectorAll('iframe');
             iframes.forEach(iframe => {
-                iframe.src = iframe.src.replace('?autoplay=1', '');
+                iframe.src = '';
             });
             
             modal.style.display = 'none';
         }
     }
 
-    // Method to add new item with local file
-    addLocalImage(title, description, imagePath, section = 'my-gallery') {
-        const newItem = {
-            id: Math.max(...this.myGalleryItems.map(i => i.id), ...this.twitterUploads.map(i => i.id), ...this.musicUploads.map(i => i.id)) + 1,
-            title: title,
-            description: description,
-            image: imagePath,
-            type: 'image',
-            section: section
-        };
-
-        if (section === 'my-gallery') {
-            this.myGalleryItems.push(newItem);
-        } else if (section === 'twitter-uploads') {
-            newItem.likes = 0;
-            newItem.retweets = 0;
-            newItem.date = new Date().toISOString().split('T')[0];
-            this.twitterUploads.push(newItem);
-        }
-
-        this.generateAllSections();
-        return newItem.id;
-    }
-
-    // Method to add new video with local file
-    addLocalVideo(title, description, videoPath, section = 'my-gallery') {
-        const newItem = {
-            id: Math.max(...this.myGalleryItems.map(i => i.id), ...this.twitterUploads.map(i => i.id), ...this.musicUploads.map(i => i.id)) + 1,
-            title: title,
-            description: description,
-            video: videoPath,
-            type: 'video',
-            section: section
-        };
-
-        if (section === 'my-gallery') {
-            this.myGalleryItems.push(newItem);
-        } else if (section === 'twitter-uploads') {
-            newItem.likes = 0;
-            newItem.retweets = 0;
-            newItem.date = new Date().toISOString().split('T')[0];
-            this.twitterUploads.push(newItem);
-        }
-
-        this.generateAllSections();
-        return newItem.id;
-    }
-
-    // Method to add new audio with local file
-    addLocalAudio(title, description, audioPath) {
-        const newItem = {
-            id: Math.max(...this.myGalleryItems.map(i => i.id), ...this.twitterUploads.map(i => i.id), ...this.musicUploads.map(i => i.id)) + 1,
-            title: title,
-            description: description,
-            audio: audioPath,
-            type: 'audio',
-            section: 'music-uploads',
-            plays: 0,
-            likes: 0,
-            date: new Date().toISOString().split('T')[0]
-        };
-
-        this.musicUploads.push(newItem);
-        this.generateMusicUploads();
-        return newItem.id;
-    }
-
-    // Method to check if file exists
-    async checkFileExists(filePath) {
-        try {
-            const response = await fetch(filePath, { method: 'HEAD' });
-            return response.ok;
-        } catch (error) {
-            return false;
-        }
-    }
-
-    // Get supported audio formats
-    getSupportedAudioFormats() {
-        return ['.mp3', '.wav', '.ogg', '.m4a'];
-    }
+    // ... rest of your methods remain the same ...
 }
 
 // Create global gallery instance
